@@ -1,9 +1,16 @@
-import express from "express";
+import express, { type Express } from "express";
 
-const app = express();
+const app: Express = express();
 const PORT = process.env.PORT ?? 3000;
 
 app.use(express.json());
+
+app.get("/", (_req, res) => {
+  res.json({
+    message: "API is running",
+    health: "/health",
+  });
+});
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });

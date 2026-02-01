@@ -102,6 +102,11 @@ API (Express) อยู่ใน `apps/api` สามารถ deploy เป็�
    - กด **Deploy** หลัง deploy เสร็จ API จะมี URL แบบ `https://your-api-xxx.vercel.app`
    - ตัวอย่าง endpoint: `GET https://your-api-xxx.vercel.app/health` จะได้ `{ "status": "ok" }`
 
+**Health check URL (โปรเจกต์นี้):**
+
+- Base: `https://demo-jnz-hackathon-jan-2026-m9tyxefqe-jiradedms-projects.vercel.app/`
+- Health: `https://demo-jnz-hackathon-jan-2026-m9tyxefqe-jiradedms-projects.vercel.app/health`
+
 4. **รัน API บนเครื่อง (local)**
    ```bash
    pnpm dev:api
