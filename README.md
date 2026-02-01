@@ -84,3 +84,26 @@ CI/CD ใช้ GitHub Actions: เมื่อ push ไปที่ branch `mai
    ```
 3. **เปิด GitHub Pages:** Repo → **Settings** → **Pages** → **Source** เลือก **GitHub Actions**
 4. หลัง workflow รันเสร็จ ไซต์จะอยู่ที่ `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/`
+
+## Deploy API ไปยัง Vercel
+
+API (Express) อยู่ใน `apps/api` สามารถ deploy เป็นโปรเจกต์แยกบน Vercel ได้ดังนี้
+
+1. **เชื่อม Repo กับ Vercel**
+   - ไปที่ [vercel.com/new](https://vercel.com/new) แล้ว Import Git repository ของโปรเจกต์นี้
+
+2. **ตั้งค่าโปรเจกต์ (สำคัญสำหรับ monorepo)**
+   - **Root Directory:** กด **Edit** แล้วเลือกโฟลเดอร์ `apps/api` (ไม่ใช้ root ของ repo)
+   - **Framework Preset:** เลือก **Other** (หรือปล่อยให้ Vercel detect Express)
+   - **Build Command:** ว่างไว้ได้ (Vercel รัน TypeScript โดยตรง)
+   - **Install Command:** ใช้ค่าจาก `apps/api/vercel.json` คือ `cd ../.. && pnpm install --filter api`
+
+3. **Deploy**
+   - กด **Deploy** หลัง deploy เสร็จ API จะมี URL แบบ `https://your-api-xxx.vercel.app`
+   - ตัวอย่าง endpoint: `GET https://your-api-xxx.vercel.app/health` จะได้ `{ "status": "ok" }`
+
+4. **รัน API บนเครื่อง (local)**
+   ```bash
+   pnpm dev:api
+   ```
+   หรือจาก root: `pnpm --filter api dev`
