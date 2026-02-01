@@ -1,5 +1,7 @@
 # React + TypeScript + Vite
 
+**Repository:** [jiradedm/demo-jnz-hackathon](https://github.com/jiradedm/demo-jnz-hackathon)
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
@@ -89,23 +91,21 @@ CI/CD ใช้ GitHub Actions: เมื่อ push ไปที่ branch `mai
 
 API (Express) อยู่ใน `apps/api` สามารถ deploy เป็นโปรเจกต์แยกบน Vercel ได้ดังนี้
 
+**Repository:** โปรเจกต์นี้ใช้ `jiradedm/demo-jnz-hackathon` — ต้องให้ Vercel ผูกกับ repo นี้เท่านั้น ถ้าผูกกับ repo อื่น (เช่น ชื่อคล้ายกัน) จะไม่ auto-deploy ตาม commit ที่ push มาที่นี่
+
 1. **เชื่อม Repo กับ Vercel**
-   - ไปที่ [vercel.com/new](https://vercel.com/new) แล้ว Import Git repository ของโปรเจกต์นี้
+   - ไปที่ [vercel.com/new](https://vercel.com/new) แล้ว Import Git repository **`jiradedm/demo-jnz-hackathon`**
+   - ถ้า repo นี้ไม่โผล่ในรายการ: ไปที่ GitHub → Settings → Applications → Vercel → เปิดสิทธิ์ให้ repo นี้
 
 2. **ตั้งค่าโปรเจกต์ (สำคัญสำหรับ monorepo)**
    - **Root Directory:** กด **Edit** แล้วเลือกโฟลเดอร์ `apps/api` (ไม่ใช้ root ของ repo)
    - **Framework Preset:** เลือก **Other** (หรือปล่อยให้ Vercel detect Express)
-   - **Build Command:** ว่างไว้ได้ (Vercel รัน TypeScript โดยตรง)
+   - **Output Directory:** ใช้ค่าจาก `apps/api/vercel.json` (`.`) — ไม่ต้องใช้ `public`
    - **Install Command:** ใช้ค่าจาก `apps/api/vercel.json` คือ `cd ../.. && pnpm install --filter api`
 
 3. **Deploy**
    - กด **Deploy** หลัง deploy เสร็จ API จะมี URL แบบ `https://your-api-xxx.vercel.app`
    - ตัวอย่าง endpoint: `GET https://your-api-xxx.vercel.app/health` จะได้ `{ "status": "ok" }`
-
-**Health check URL (โปรเจกต์นี้):**
-
-- Base: `https://demo-jnz-hackathon-jan-2026-m9tyxefqe-jiradedms-projects.vercel.app/`
-- Health: `https://demo-jnz-hackathon-jan-2026-m9tyxefqe-jiradedms-projects.vercel.app/health`
 
 4. **รัน API บนเครื่อง (local)**
    ```bash
