@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Upload, File, X } from "lucide-react";
 import { Label } from "@/app/components/ui/label";
 
@@ -8,6 +8,13 @@ interface FileUploadProps {
   accept?: string;
   required?: boolean;
   optional?: boolean;
+  /** Controlled: value from form */
+  value?: File | null;
+  /** Controlled: called when file changes (e.g. field.onChange) */
+  onChange?: (file: File | null) => void;
+  /** Validation error message */
+  error?: string;
+  /** Legacy: use when not controlled by form */
   onFileChange?: (file: File | null) => void;
 }
 
@@ -17,15 +24,25 @@ export function FileUpload({
   accept,
   required = false,
   optional = false,
+  value: controlledValue,
+  onChange: controlledOnChange,
+  error,
   onFileChange,
 }: FileUploadProps) {
-  const [file, setFile] = useState<File | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [internalFile, setInternalFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  const isControlled =
+    controlledValue !== undefined && controlledOnChange !== undefined;
+  const file = isControlled ? controlledValue ?? null : internalFile;
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
+    const selectedFile = e.target.files?.[0] ?? null;
+    if (isControlled) {
+      controlledOnChange(selectedFile);
+    } else {
+      setInternalFile(selectedFile);
       onFileChange?.(selectedFile);
     }
   };
@@ -43,16 +60,25 @@ export function FileUpload({
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
-    const droppedFile = e.dataTransfer.files?.[0];
-    if (droppedFile) {
-      setFile(droppedFile);
+    const droppedFile = e.dataTransfer.files?.[0] ?? null;
+    if (isControlled) {
+      controlledOnChange(droppedFile);
+    } else {
+      setInternalFile(droppedFile);
       onFileChange?.(droppedFile);
     }
   };
 
   const removeFile = () => {
-    setFile(null);
-    onFileChange?.(null);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+    if (isControlled) {
+      controlledOnChange(null);
+    } else {
+      setInternalFile(null);
+      onFileChange?.(null);
+    }
   };
 
   return (
@@ -76,16 +102,19 @@ export function FileUpload({
         }`}
       >
         <input
+          ref={inputRef}
           type="file"
           id={id}
           accept={accept}
           onChange={handleFileChange}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer ${
+            file ? "pointer-events-none" : ""
+          }`}
           aria-label={label}
         />
 
         {file ? (
-          <div className="flex items-center justify-between p-4">
+          <div className="relative flex items-center justify-between p-4 pointer-events-auto">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-lg">
                 <File className="w-5 h-5 text-primary" />
@@ -99,7 +128,11 @@ export function FileUpload({
             </div>
             <button
               type="button"
-              onClick={removeFile}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                removeFile();
+              }}
               className="p-1 hover:bg-gray-100 rounded transition-colors"
             >
               <X className="w-4 h-4 text-gray-500" />
@@ -121,6 +154,7 @@ export function FileUpload({
           </div>
         )}
       </div>
+      {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
 }
