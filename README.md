@@ -71,3 +71,16 @@ export default defineConfig([
   },
 ])
 ```
+
+## Deploy to GitHub Pages
+
+CI/CD ใช้ GitHub Actions: เมื่อ push ไปที่ branch `main` จะ build และ deploy ไปยัง GitHub Pages อัตโนมัติ
+
+1. **สร้าง repo ใหม่บน GitHub** (ไม่ต้องเพิ่ม README/gitignore)
+2. **เพิ่ม remote และ push:**
+   ```bash
+   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+   git push -u origin main
+   ```
+3. **เปิด GitHub Pages:** Repo → **Settings** → **Pages** → **Source** เลือก **GitHub Actions**
+4. หลัง workflow รันเสร็จ ไซต์จะอยู่ที่ `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/`
