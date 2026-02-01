@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "build": "pnpm run build:api",
     "dev:web": "pnpm --filter web dev",
     "build:web": "pnpm --filter web build",
     "dev:api": "pnpm --filter api dev",
